@@ -1,0 +1,31 @@
+### 🧠  Problem: Earliest and Latest Round in Tournament
+
+**Leetcode-style Problem**
+
+There are `n` players standing in a row. In each round, the i-th player from the front plays the i-th from the end. The winner advances. If there's a middle player (odd count), they auto-advance. Two strong players `firstPlayer` and `secondPlayer` always win unless they face each other.
+
+Find the earliest and latest round they could meet.
+
+---
+
+**Code:**
+```python
+from typing import List
+from math import inf
+
+class Solution:
+    def earliestAndLatest(self, n: int, fp: int, sp: int) -> List[int]:
+        def dfs(x, y, total):
+            if x == y: return (1, 1)
+            if x > y: return dfs(y, x, total)
+            mn, mx = inf, -inf
+            for i in range(1, x + 1):
+                for j in range(x - i + 1, y - i + 1):
+                    s = i + j
+                    if x + y - total // 2 <= s <= (total + 1) // 2:
+                        a, b = dfs(i, j, (total + 1) // 2)
+                        mn = min(mn, a + 1)
+                        mx = max(mx, b + 1)
+            return (mn, mx)
+
+        return list(dfs(fp, n - sp + 1, n))
